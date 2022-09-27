@@ -8,6 +8,9 @@ public class SnakeScript : MonoBehaviour
     private Vector2 direction = Vector2.right;
     private Vector2 playerMovement;
 
+    private List<Transform> segments;
+    public Transform segmentPrefab;
+
     [SerializeField] float moveTimerMax = 1f;
     float moveTimer;
 
@@ -15,34 +18,76 @@ public class SnakeScript : MonoBehaviour
     {
         moveTimer = moveTimerMax;
     }
+    private void Start()
+    {
+        segments = new List<Transform>();
+        segments.Add(this.transform);
+    }
     private void Update()
     {
-        if (direction.x == 1)
+        if (direction.x == 1&&playerMovement != Vector2.left)
             playerMovement = Vector2.right;
-        else if (direction.x == -1)
+        else if (direction.x == -1&&playerMovement != Vector2.right)
             playerMovement = Vector2.left;
-        else if (direction.y == 1)
+        else if (direction.y == 1 && playerMovement != Vector2.down)
             playerMovement = Vector2.up;
-        else if (direction.y == -1)
+        else if (direction.y == -1 && playerMovement != Vector2.up)
             playerMovement = Vector2.down;
 
         moveTimer += Time.deltaTime;
         if (moveTimer>moveTimerMax)
         {
-            if (playerMovement == Vector2.right)
-                transform.position = new Vector2(transform.position.x+1, transform.position.y);
-            else if (playerMovement == Vector2.left)
-                transform.position = new Vector2(transform.position.x-1, transform.position.y);
-            else if (playerMovement == Vector2.up)
-                transform.position = new Vector2(transform.position.x, transform.position.y+1);
-            else if (playerMovement == Vector2.down)
-                transform.position = new Vector2(transform.position.x, transform.position.y-1);
-            moveTimer = 0;
-        }
+            for (int i = segments.Count - 1; i > 0; i--)
+            {
+                segments[i].position = segments[i - 1].position;
+            }
 
+            if (playerMovement == Vector2.right)
+            {
+                transform.position = new Vector2(transform.position.x + 1, transform.position.y);
+                GetComponentInChildren<Transform>().eulerAngles = new Vector3(0, 0, 0);
+            }
+            else if (playerMovement == Vector2.left)
+            {
+                transform.position = new Vector2(transform.position.x - 1, transform.position.y);
+                GetComponentInChildren<Transform>().eulerAngles = new Vector3(0, 0, 180);
+            }
+            else if (playerMovement == Vector2.up)
+            {
+                transform.position = new Vector2(transform.position.x, transform.position.y + 1);
+                GetComponentInChildren<Transform>().eulerAngles = new Vector3(0, 0, 90);
+            }
+            else if (playerMovement == Vector2.down)
+            {
+                transform.position = new Vector2(transform.position.x, transform.position.y - 1);
+                GetComponentInChildren<Transform>().eulerAngles = new Vector3(0, 0, 270);
+            }
+            moveTimer = 0;
+            
+        }
+        
+
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("food"))
+        {
+            Grow();
+        }
+        else if (collision.gameObject.CompareTag("obstacle"))
+        {
+            Destroy(gameObject);
+        }
     }
     void OnMove (InputValue value)
     {
         direction = value.Get<Vector2>();
+    }
+
+    void Grow()
+    {
+        Transform segment = Instantiate(this.segmentPrefab);
+        segment.position = segments[segments.Count - 1].position;
+        segments.Add(segment);
     }
 }
