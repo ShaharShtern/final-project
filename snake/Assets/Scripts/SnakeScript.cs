@@ -7,16 +7,26 @@ public class SnakeScript : MonoBehaviour
 {
     private Vector2 direction = Vector2.right;
     private Vector2 playerMovement;
+    //[SerializeField]float powerTimerMax = 10f;
+    public float powerTimer=0;
 
     private List<Transform> segments;
     public Transform segmentPrefab;
 
-    [SerializeField] float moveTimerMax = 1f;
+    public int scorePowerMultiplyer=1;
+
+    public int score=0;
+
+    [SerializeField] float moveTimerMax = 0.1f;
     float moveTimer;
 
+    public GameObject walls;
+    public GameObject timerText;
+    public GameObject lostCanvas;
     private void Awake()
     {
         moveTimer = moveTimerMax;
+        
     }
     private void Start()
     {
@@ -65,7 +75,37 @@ public class SnakeScript : MonoBehaviour
             moveTimer = 0;
             
         }
-        
+
+        //loop around when out of bounds for the power fruit
+        if (transform.position.x<-16)
+        {
+            transform.position = new Vector2(16, transform.position.y);
+        }
+        else if (transform.position.x>16)
+        {
+            transform.position = new Vector2(-16, transform.position.y);
+        }
+        else if (transform.position.y<-8)
+        {
+            transform.position = new Vector2(transform.position.x, 8);
+        }
+        else if (transform.position.y>8)
+        {
+            transform.position = new Vector2(transform.position.x, -8);
+        }
+
+        if (scorePowerMultiplyer==2)
+        {
+            powerTimer -= Time.deltaTime;
+            timerText.SetActive(true);
+        }
+        if (powerTimer < 0)
+        {
+            walls.SetActive(true);
+            scorePowerMultiplyer = 1;
+            powerTimer = 10;
+            timerText.SetActive(false);
+        }
 
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -73,9 +113,12 @@ public class SnakeScript : MonoBehaviour
         if (collision.gameObject.CompareTag("food"))
         {
             Grow();
+            score = score+1*scorePowerMultiplyer ;
+            moveTimerMax = moveTimerMax * 0.95f;
         }
         else if (collision.gameObject.CompareTag("obstacle"))
         {
+            lostCanvas.SetActive(true);
             Destroy(gameObject);
         }
     }

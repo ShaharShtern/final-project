@@ -74,6 +74,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomX: 15
   randomY: 7
+  powerFruit: {fileID: 0}
+  powerFruitCountdown: 30
 --- !u!1 &7060258423267769482
 GameObject:
   m_ObjectHideFlags: 0

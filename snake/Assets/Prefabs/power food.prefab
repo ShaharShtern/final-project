@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 3c41ac3a671d7224c967ba287f9eac65, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.8523679, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 5622145626792914871}
   m_Layer: 0
   m_Name: power food
-  m_TagString: food
+  m_TagString: power food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -158,3 +158,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   randomX: 15
   randomY: 7
+  powerFruit: {fileID: 4915482743193989028}
+  powerFruitCountdown: 30
